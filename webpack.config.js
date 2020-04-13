@@ -1,10 +1,15 @@
 const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = (env, arg) => {
+    let isProduction = false;
 
-    const isProduction = arg.mode === 'production' ? true : false;
+    if (typeof env !== 'undefined' && env !== null) {
+        isProduction = env.mode === 'production' ? true : false;
+    }
+
     const extractStyles = new MiniCssExtractPlugin({
         filename: './css/[name].css'
     });
@@ -17,7 +22,20 @@ module.exports = (env, arg) => {
         },
         output:{
             path: path.resolve(__dirname, './dist/', arg.mode + '/',),
-            filename: '[name].js'
+            filename: '[name].js',
+            globalObject: 'this'
+        },
+        mode: !isProduction ? 'development' : 'production',
+        target: 'web',
+        optimization: {
+            minimize: isProduction,
+            minimizer: [
+                new UglifyJsPlugin({
+                    cache: true,
+                    parallel: true,
+                    sourceMap: true
+                })
+            ]
         },
         module:{
             rules: [
@@ -38,7 +56,7 @@ module.exports = (env, arg) => {
                         {
                             loader: 'css-loader',
                             options: {
-                                sourceMap: true
+                                sourceMap: !isProduction
                             }
                         }
                     ]
@@ -55,12 +73,12 @@ module.exports = (env, arg) => {
                         {
                             loader: 'css-loader',
                             options: {
-                                sourceMap: true
+                                sourceMap: !isProduction
                             }
                         }, {
                             loader: 'sass-loader',
                             options: {
-                                sourceMap: true
+                                sourceMap: !isProduction
                             }
                         }
                     ]
@@ -87,14 +105,7 @@ module.exports = (env, arg) => {
         plugins:[
             extractStyles,
             new VueLoaderPlugin
-        ].concat(isProduction ? [
-            new webpack.optimize.UglifyJsPlugin({
-                sourceMap: true,
-                compress: {
-                    warnings: false
-                }
-            })
-        ] : [
+        ].concat(isProduction ? [] : [
             new webpack.NamedModulesPlugin(),
             new webpack.HotModuleReplacementPlugin()
         ])

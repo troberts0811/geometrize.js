@@ -31,7 +31,6 @@ export default class Grid{
     
                 if(r === this.rows){
                     y = helpers.getRandomInt(this.h, this.h + this.fractionY);
-                    console.log("y: ", y);
                 }
     
                 if( c === 0){
@@ -40,7 +39,6 @@ export default class Grid{
     
                 if( c === this.cols){
                     x = helpers.getRandomInt(this.w, this.w + this.fractionX);
-                    console.log("x: ", x);
                 }
     
                 row.push(new Point(x, y));
