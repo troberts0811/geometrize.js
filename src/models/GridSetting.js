@@ -1,19 +1,44 @@
 export default class GridSetting{
 
-    constructor(canvas, rows = 30, columns = 36, randomPercX = 33.33, randomPercY = 33.33){
+    constructor(rows = 30, columns = 36, randomPercX = 33.33, randomPercY = 33.33){
 
-        this.SetSize(canvas);
         this.SetRows(rows);
         this.SetColumns(columns);
         this.SetRandomicityX(randomPercX);
         this.SetRandomicityY(randomPercY);
     }
 
-    SetColumns(qty){
-        if(typeof qty === 'number' || typeof parseInt(qty) === 'number'){
-            this.Columns = parseInt(qty);
+    SetRows(qty){
+        if(typeof qty === 'number'){
+            if(Number.isInteger(qty)){
+                this.Rows = qty;
+            }else{
+                this.Rows = parseInt(qty.toFixed(0), 10);
+            }
         }else{
-            this.Columns = 36;
+            if(typeof qty === 'string' && !isNaN(parseInt(qty))){
+                this.Rows = parseInt(qty);
+            }else{
+                console.warn("Invalid row count passed into grid settings. Setting to default of 30.");
+                this.Rows = 30;
+            }
+        }
+    }
+
+    SetColumns(qty){
+        if(typeof qty === 'number'){
+            if(Number.isInteger(qty)){
+                this.Columns = qty;
+            }else{
+                this.Columns = parseInt(qty.toFixed(0), 10);
+            }
+        }else{
+            if(typeof qty === 'string' && !isNaN(parseInt(qty))){
+                this.Columns = parseInt(qty);
+            }else{
+                console.warn("Invalid column count passed into grid settings. Setting to default of 36.");
+                this.Columns = 36;
+            }
         }
     }
 
@@ -30,24 +55,6 @@ export default class GridSetting{
             this.PositionRandomPercentageY = amount;
         }else{
             this.PositionRandomPercentageY = 33.33;
-        }
-    }
-
-    SetRows(qty){
-        if(typeof qty === 'number' || typeof parseInt(qty) === 'number'){
-            this.Rows = parseInt(qty);
-        }else{
-            this.Rows = 30;
-        }
-    }
-
-    SetSize(canvas){
-        if(typeof canvas !== 'undefined'){
-            this.Width = canvas.clientWidth * window.devicePixelRatio;
-            this.Height = canvas.clientHeight * window.devicePixelRatio;
-        }else{
-            this.Width = window.innerWidth * window.devicePixelRatio;
-            this.Height = window.innerHeight * window.devicePixelRatio;
         }
     }
 }

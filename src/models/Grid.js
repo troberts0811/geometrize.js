@@ -1,12 +1,13 @@
-import { helpers } from '../helpers';
+import helpers from '../helpers';
 import Point from './Point';
 export default class Grid{
 
-    constructor(config){
+    constructor(canvas, config){
+        console.log(config);
         this.rows = config.Rows;
         this.cols = config.Columns;
-        this.w = config.Width;
-        this.h = config.Height;
+        this.w = canvas.clientWidth * window.devicePixelRatio;
+        this.h = canvas.clientHeight * window.devicePixelRatio;
         this.points = [];
         this.intervalX = this.w / this.cols;
         this.intervalY = this.h / this.rows;
@@ -19,6 +20,7 @@ export default class Grid{
     BuildPoints(){
         for(var r = 0; r <= this.rows; r++){
             var row = [];
+            
             for(var c = 0; c <= this.cols; c++){
                 var x = helpers.getRandomInt((this.intervalX * c) - this.fractionX, (this.intervalX * c) + this.fractionX);
                 var y = helpers.getRandomInt((this.intervalY * r) - this.fractionY, (this.intervalY * r) + this.fractionY);
@@ -29,6 +31,7 @@ export default class Grid{
     
                 if(r === this.rows){
                     y = helpers.getRandomInt(this.h, this.h + this.fractionY);
+                    console.log("y: ", y);
                 }
     
                 if( c === 0){
@@ -37,6 +40,7 @@ export default class Grid{
     
                 if( c === this.cols){
                     x = helpers.getRandomInt(this.w, this.w + this.fractionX);
+                    console.log("x: ", x);
                 }
     
                 row.push(new Point(x, y));

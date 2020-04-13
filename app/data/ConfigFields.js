@@ -1,17 +1,21 @@
-import { Axis } from 'geometrize/enums/Axis';
-import { ColourChannelAssignments as Assignments } from 'geometrize/enums/ColourChannelAssignment';
+import Axis from 'geometrize/enums/Axis';
+import GradientDirection from 'geometrize/enums/GradientDirection';
+import GradientProperty from 'geometrize/enums/GradientProperty';
+import ColourProfileProperty from 'geometrize/enums/ColourProfileProperty';
+import GridProperty from 'geometrize/enums/GridProperty';
+import EffectsProperty from 'geometrize/enums/EffectsProperty';
 
 export const ConfigFields = [
     {
-        model: "ColourChannelSettings",
-        displayName: "Colour Channel Settings",
+        model: "Gradient",
+        displayName: "Gradient Settings",
         fields:[
             {
-                name: "R",
-                type: "object",
-                objectName: "ColourProfile",
-                displayName: "Red Channel",
-                options: [],
+                name: GradientProperty.DIRECTION,
+                type: "string",
+                objectName: "",
+                displayName: "Direction",
+                options: [GradientDirection.LINEAR_LEFT, GradientDirection.LINEAR_RIGHT, GradientDirection.LINEAR_TOP, GradientDirection.LINEAR_BOTTOM],
                 isInteger: false,
                 min: 0,
                 max: 0,
@@ -19,26 +23,14 @@ export const ConfigFields = [
                 rules:[]
             },
             {
-                name: "G",
-                type: "object",
-                objectName: "ColourProfile",
-                displayName: "Green Channel",
+                name: GradientProperty.MILESTONES,
+                type: "gradient",
+                objectName: "",
+                displayName: "Milestones",
                 options: [],
+                isInteger: false,
                 min: 0,
                 max: 0,
-                isInteger: false,
-                isEditable: true,
-                rules:[]
-            },
-            {
-                name: "B",
-                type: "object",
-                objectName: "ColourProfile",
-                displayName: "Blue Channel",
-                options: [],
-                min: 0,
-                max: 0,
-                isInteger: false,
                 isEditable: true,
                 rules:[]
             }
@@ -48,33 +40,25 @@ export const ConfigFields = [
         model: "ColourProfile",
         fields:[
             {
-                name: "Min",
-                type: "number",
+                name: ColourProfileProperty.HEX,
+                type: "color",
                 objectName: "",
-                displayName: "Minimum",
+                displayName: "Hex Code",
                 options: [],
                 min: 0,
-                max: 255,
-                isInteger: true,
+                max: 100,
+                isInteger: false,
                 isEditable: true,
-                rules:[
-                    function(val, model){
-                        if(model["Max"] <= val){
-                            return true;
-                        } else{
-                            return false;
-                        }
-                    }
-                ]
+                rules:[]
             },
             {
-                name: "Max",
+                name: ColourProfileProperty.POSITION,
                 type: "number",
                 objectName: "",
-                displayName: "Maximum",
+                displayName: "Position",
                 options: [],
                 min: 0,
-                max: 255,
+                max: 100,
                 isInteger: true,
                 isEditable: true,
                 rules:[
@@ -84,30 +68,66 @@ export const ConfigFields = [
                         } else{
                             return false;
                         }
+                    },
+                    function(val, model){
+                        if(model["Max"] <= val){
+                            return true;
+                        } else{
+                            return false;
+                        }
                     }
                 ]
+            }
+        ]
+    },
+    {
+        model:"Effects",
+        fields:[
+            {
+                name: EffectsProperty.Hover,
+                type: "checkbox",
+                objectName: "",
+                displayName: "Hover",
+                options: [],
+                min: 0,
+                max: null,
+                isInteger: false,
+                isEditable: false,
+                rules:[]
             },
             {
-                name: "Axis",
-                type: "string",
+                name: EffectsProperty.Click,
+                type: "checkbox",
                 objectName: "",
-                displayName: "Axis",
-                options: [Axis.X, Axis.Y],
+                displayName: "Click",
+                options: [],
+                min: 0,
+                max: null,
+                isInteger: false,
+                isEditable: false,
+                rules:[]
+            },
+            {
+                name: EffectsProperty.COLOUR_HOVER,
+                type: "color",
+                objectName: "",
+                displayName: "Hover Colour",
+                options: [],
+                isInteger: false,
                 min: 0,
                 max: 0,
-                isInteger: true,
                 isEditable: true,
                 rules:[]
             },
             {
-                name: "Assignment",
-                type: "string",
+                name: EffectsProperty.COLOUR_ACTIVE,
+                type: "color",
                 objectName: "",
-                displayName: "Assignment Mode",
-                options: [Assignments.RANDOM, Assignments.R, Assignments.G, Assignments.B],
+                displayName: "Click Colour",
+                options: [],
+                isInteger: false,
                 min: 0,
                 max: 0,
-                isInteger: true,
                 isEditable: true,
                 rules:[]
             }
@@ -117,31 +137,7 @@ export const ConfigFields = [
         model: "Grid",
         fields:[
             {
-                name: "Width",
-                type: "number",
-                objectName: "",
-                displayName: "Width",
-                options: [],
-                min: 0,
-                max: null,
-                isInteger: true,
-                isEditable: false,
-                rules:[]
-            },
-            {
-                name: "Height",
-                type: "number",
-                objectName: "",
-                displayName: "Height",
-                options: [],
-                min: 0,
-                max: null,
-                isInteger: true,
-                isEditable: false,
-                rules:[]
-            },
-            {
-                name: "Rows",
+                name: GridProperty.ROWS,
                 type: "number",
                 objectName: "",
                 displayName: "No of Rows",
@@ -153,7 +149,7 @@ export const ConfigFields = [
                 rules:[]
             },
             {
-                name: "Columns",
+                name: GridProperty.COLUMNS,
                 type: "number",
                 objectName: "",
                 displayName: "No of Columns",
@@ -165,7 +161,7 @@ export const ConfigFields = [
                 rules:[]
             },
             {
-                name: "PositionRandomPercentageX",
+                name: GridProperty.POSITIONRANDOMPERCENTAGEX,
                 type: "number",
                 objectName: "",
                 displayName: "X Position Spread %",
@@ -177,7 +173,7 @@ export const ConfigFields = [
                 rules:[]
             },
             {
-                name: "PositionRandomPercentageY",
+                name: GridProperty.POSITIONRANDOMPERCENTAGEY,
                 type: "number",
                 objectName: "",
                 displayName: "Y Position Spread %",

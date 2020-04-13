@@ -1,6 +1,9 @@
+import Keys from '../enums/MetaDataKeys';
+
 export default class ArrayMeta{
-    constructor(){
+    constructor(index){
         this.Data = {};
+        this.AddMeta(Keys.INDEX, index);
     }
 
     KeyExits(key){
@@ -12,7 +15,11 @@ export default class ArrayMeta{
     }
 
     GetMetaValue(key){
-        return this.Data[key];
+        if(this.KeyExits(key)){
+            return this.Data[key];
+        }else{
+            return null;
+        }
     }
 
     RemoveMeta(key){

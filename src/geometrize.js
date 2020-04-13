@@ -1,7 +1,8 @@
-import { MetaDataKeys } from './enums/MetaDataKeys';
+import MetaDataKeys from './enums/MetaDataKeys';
 import ArrayMeta from './models/ArrayMeta';
 import Config from './models/Config';
 import Grid from './models/Grid';
+import MutationResult from './models/MutationResult';
 import Triangle from './models/Triangle';
 
 export default class Geometrize{
@@ -10,21 +11,22 @@ export default class Geometrize{
         this.CreateRenderer(targetId);
 
         if(this.Canvas !== null){
-            if(config !== null){
-                this.AddSettings(config);
-            }else{
-                this.AddSettings();
-            }
-
-            this.Grid = new Grid(this.Settings.Grid);
+            this.Settings = new Config(config);
+            this.Grid = new Grid(this.Canvas, this.Settings.Grid);
             this.Triangles = [];
             this.RowMeta = [];
-            this.ColMeta = [];
+            this.Targets = {
+                Row: null,
+                Col: null
+            };
             this.Mouse = {
+                Down: false,
                 X: 0,
                 Y: 0
             };
-            this.CreateTriangles(this.Settings.ColourChannelSettings, this.Canvas);
+            this.AnimationID = null;
+            this.CreateTriangles(this.Settings.Gradient, this.Canvas);
+            this.BindMouse();
             this.Draw();
         }
     }
@@ -35,32 +37,32 @@ export default class Geometrize{
         if(document.getElementById(targetId) !== null)
         {
             if(document.getElementById(targetId).tagName.toUpperCase() === 'CANVAS'){
-                el.setAttribute('width', getComputedStyle(el).getPropertyValue('width').slice(0,-2) * window.devicePixelRatio);
-                el.setAttribute('height', getComputedStyle(el).getPropertyValue('height').slice(0,-2) * window.devicePixelRatio);
+                el.setAttribute('width', el.getBoundingClientRect().width * window.devicePixelRatio);
+                el.setAttribute('height', el.getBoundingClientRect().height * window.devicePixelRatio);
                 this.Canvas = el;
                 this.Context = el.getContext('2d');
             }else{
                 let canvas = document.createElement("canvas");
                 canvas.id = "geometrize";
+                canvas.setAttribute('width', el.getBoundingClientRect().width * window.devicePixelRatio);
+                canvas.setAttribute('height', el.getBoundingClientRect().height * window.devicePixelRatio);
                 el.appendChild(canvas);
-
-                if(parseInt(getComputedStyle(el).getPropertyValue('width').slice(0,-2)) > 0){
-                    canvas.setAttribute('width', getComputedStyle(el).getPropertyValue('width').slice(0,-2) * window.devicePixelRatio);    
-                }else{
-                    console.warn('Container for Geometrize canvas has a width of 0. Defaulting the width of canvas to window width * dpi.')
-                    canvas.setAttribute('width', window.innerWidth * window.devicePixelRatio);
-                }
-
-                if(parseInt(getComputedStyle(el).getPropertyValue('height').slice(0,-2)) > 0){
-                    canvas.setAttribute('height', getComputedStyle(el).getPropertyValue('height').slice(0,-2) * window.devicePixelRatio);    
-                }else{
-                    console.warn('Container for Geometrize canvas has a height of 0. Defaulting the height of canvas to window height * dpi.')
-                    canvas.setAttribute('width', window.innerHeight * window.devicePixelRatio);
-                }
-
                 this.Canvas = canvas;
                 this.Context = canvas.getContext('2d');
             }
+
+            window.addEventListener('resize', () => {
+                cancelAnimationFrame(this.AnimationID);
+                this.Canvas.setAttribute('width', this.Canvas.parentElement.getBoundingClientRect().width * window.devicePixelRatio);
+                this.Canvas.setAttribute('height', this.Canvas.parentElement.getBoundingClientRect().height * window.devicePixelRatio);
+                this.Grid = null;
+                this.Triangles = [];
+                this.RowMeta = [];
+                this.Grid = new Grid(this.Canvas, this.Settings.Grid);
+                this.CreateTriangles(this.Settings.Gradient, this.Canvas);
+                this.BindMouse(true);
+                this.Draw();
+            });
         }else{
             console.error("No target was found for the renderer. Check the id passed in.");
             this.Canvas = null;
@@ -68,17 +70,25 @@ export default class Geometrize{
         }
     }
 
-    AddSettings(config){
-        this.Settings = new Config(this.Canvas);
+    MutateSettings(payload){
+        cancelAnimationFrame(this.AnimationID);
+        let results = this.Settings.ParseMutation(payload);
+        if(results instanceof MutationResult && results.Success){
+            cancelAnimationFrame(this.AnimationID);
+            if(results.NeedsNewGrid){
+                this.Grid = null;
+                this.Grid = new Grid(this.Canvas, this.Settings.Grid);
+            }
 
-        if(arguments.length > 0){
-            const self = this;
-            Object.getOwnPropertyNames(config).forEach(function(val, inx, arr){
-                if(self.Settings.hasOwnProperty(val)){
-                    self.Settings[val] = config[val];
-                }
-            });
+            if(results.NeedsNewTriangles){
+                this.Triangles = [];
+                this.RowMeta = [];
+                this.CreateTriangles(this.Settings.Gradient, this.Canvas);
+            }
         }
+        this.BindMouse(true);
+        this.Draw();
+        return this.GetSettings();
     }
 
     GetSettings(){
@@ -86,9 +96,8 @@ export default class Geometrize{
     }
 
     CreateTriangles(colourSettings, canvas){
-        let colMins = [], colMaxs = [];
         for(let r = 0; r < this.Grid.points.length-1; r++){
-            let triangleRow = [], rowMinY = this.Grid.points[r][0].y, rowMaxY = this.Grid.points[r][0].y, rowMeta = new ArrayMeta();
+            let triangleRow = [], rowMinY = this.Grid.points[r][0].y, rowMaxY = this.Grid.points[r][0].y, rowMeta = new ArrayMeta(r);
 
             for(let c = 0; c < this.Grid.points[r].length - 1; c++){
                 triangleRow.push(new Triangle(this.Grid.points[r][c], this.Grid.points[r+1][c], this.Grid.points[r][c+1], colourSettings, canvas));
@@ -103,22 +112,6 @@ export default class Geometrize{
                         rowMaxY = points[p].y;
                     }
                 }
-
-                if(colMins.length > c){
-                    if(colMins[c] > this.Grid.points[r][c].x){
-                        colMins[c] = this.Grid.points[r][c].x;
-                    }
-                }else{
-                    colMins.push(this.Grid.points[r][c].x)
-                }
-
-                if(colMaxs.length > c){
-                    if(colMaxs[c] < this.Grid.points[r][c].x){
-                        colMaxs[c] = this.Grid.points[r][c].x;
-                    }
-                }else{
-                    colMaxs.push(this.Grid.points[r][c].x)
-                }
             }
 
             rowMeta.AddMeta(MetaDataKeys.MIN_Y, rowMinY);
@@ -127,63 +120,104 @@ export default class Geometrize{
             this.Triangles.push(triangleRow);
             this.RowMeta.push(rowMeta);
         }
-
-        for(let col = 0; col < colMins.length; col++){
-            let colMeta = new ArrayMeta();
-            colMeta.AddMeta(MetaDataKeys.MIN_X, colMins[col]);
-            colMeta.AddMeta(MetaDataKeys.MAX_X, colMaxs[col]);
-            this.ColMeta.push(colMeta);
-        }
     }
 
     DrawTriangles(){
-        for(let tr=0; tr < this.Triangles.length; tr++){
-            let triangles = this.Triangles[tr];
-            for(let t=0; t < triangles.length; t++){
+        for(let tr = 0; tr < this.Triangles.length; tr++){
+            this.Triangles[tr].forEach((t, i) => {
                 this.Context.beginPath();
-                this.Context.fillStyle = triangles[t].FillStyle;
-                this.Context.moveTo(triangles[t].Point1.x, triangles[t].Point1.y);
-                this.Context.lineTo(triangles[t].Point2.x, triangles[t].Point2.y);
-                this.Context.lineTo(triangles[t].Point3.x, triangles[t].Point3.y);
+                this.Context.fillStyle = this.GetTriangleColour(t, tr, i);
+                this.Context.moveTo(t.Point1.x, t.Point1.y);
+                this.Context.lineTo(t.Point2.x, t.Point2.y);
+                this.Context.lineTo(t.Point3.x, t.Point3.y);
                 this.Context.fill();
-            }
+            });
         }
     }
 
-    Draw(){
+    GetTriangleColour(triangle, row, col){
+        if(this.Settings.Effects.Click || this.Settings.Effects.Hover){
+            if(this.Settings.Effects.Click && this.Mouse.Down){
+                if(row === this.Targets.Row && col === this.Targets.Col){
+                    return this.Settings.Effects.ActiveColour;
+                }
+            } else {
+                if(this.Settings.Effects.Hover){
+                    if(row === this.Targets.Row && col === this.Targets.Col){
+                        return this.Settings.Effects.HoverColour;
+                    }
+                }
+            }
+        }
 
+        return triangle.FillStyle;
+    }
+
+    BindMouse(isRestart = false){
+        const listener = (e) => {
+            this.Mouse.X = e.clientX * window.devicePixelRatio - this.Canvas.getBoundingClientRect().left;
+            this.Mouse.Y = e.clientY * window.devicePixelRatio - this.Canvas.getBoundingClientRect().top;
+        };
+
+        const mouseTrigger = (e) => {
+            if(e.button === 0){
+                this.Mouse.Down = !this.Mouse.Down;
+            }
+        };
+
+        if(isRestart){
+            this.Canvas.removeEventListener('mousemove', listener);
+            this.Canvas.removeEventListener('mousedown', mouseTrigger);
+            this.Canvas.removeEventListener('mouseup', mouseTrigger);
+        }
+
+        this.Canvas.addEventListener('mousemove', listener);
+        this.Canvas.addEventListener('mousedown', mouseTrigger);
+        this.Canvas.addEventListener('mouseup', mouseTrigger);
+    }
+
+    Draw(){
         this.DrawTriangles();
         //see if mouse is in triangle
+        if(this.Settings.Effects.Click || this.Settings.Effects.Hover){
+            const testTriangle = (triangle) => {
+                return this.Context.isPointInPath(triangle.GetPath(), this.Mouse.X, this.Mouse.Y);
+            };
     
-        // let rowTargets = [], target = 0;
-
-        // for(let tr = 0; tr < this.Triangles.length; tr++)
-        // {
-        //     if(this.Mouse.Y >= this.Triangles[tr].minY && this.Mouse.Y <= this.Triangles[tr].maxY){
-        //         rowTargets.push(this.Triangles[tr]);
-        //     }
-        // }
+            let rowTargets = [], target = 0;
     
-        //we have cases now loop through each and see if it is our triangle
-        // for(var rt = 0; rt < rowTargets.length; rt++){
-        //     for(var t = 0; t < rowTargets[rt].triangles.length; t++){
-        //         var triangle = rowTargets[rt].triangles[t];
-        //         if(context.isPointInPath(triangle.GetPath(), mouse.x, mouse.y))
-        //         {
-        //             target = triangle;
-        //             break;
-        //         }
-        //     }
-        //     if(target !== 0){
-        //         break;
-        //     }
-        // }
+            for(let rmi = 0; rmi < this.RowMeta.length; rmi++)
+            {
+                if(this.RowMeta[rmi].GetMetaValue(MetaDataKeys.MIN_Y) != null && this.RowMeta[rmi].GetMetaValue(MetaDataKeys.MAX_Y) != null && this.RowMeta[rmi].GetMetaValue(MetaDataKeys.MIN_Y) <= this.Mouse.Y && this.RowMeta[rmi].GetMetaValue(MetaDataKeys.MAX_Y) > this.Mouse.Y){
+                    rowTargets.push(this.RowMeta[rmi]);
+                }
+            }
     
-        // if(target !== 0){
-        //     target.DrawSelectedPath();
-        // }
+            for(let rt = 0; rt < rowTargets.length; rt++){
+                let rti = rowTargets[rt].GetMetaValue(MetaDataKeys.INDEX);
     
-        requestAnimationFrame(() => {this.Draw()});
+                for(let cti = 0; cti < this.Triangles[rti].length; cti++){
+                    if(testTriangle(this.Triangles[rti][cti]))
+                    {
+                        target = 1;
+                        this.Targets.Row = rti;
+                        this.Targets.Col = cti;
+                        break;
+                    }
+                }
+    
+                if(target !== 0){
+                    break;
+                }
+            }
+        
+            if(target === 0){
+                this.Targets.Row = null;
+                this.Targets.Col = null;
+            }
+        }
+    
+        this.AnimationID = requestAnimationFrame(() => {this.Draw()});
     }
 
 }
