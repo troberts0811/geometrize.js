@@ -5,9 +5,9 @@
                 <canvas id="geometrize"></canvas>
                 <div id="message" class="window" v-if="!IsDismissed">
                     <h1>Welcome to Geometrize</h1>
-                    <p>This is a little plugin to make a triangular gradient using canvas. The colours and grid sizing is controlled by the settings below for you to customise.</p>
+                    <p>This is a configurable plugin to make a triangular gradient using canvas. The colours and grid sizing is controlled by the settings below for you to customise.</p>
                     <p>Use the get config button to get any configuration you would like to use for yourself.</p>
-                    <p>For more information, check out the <a href="" target="_blank">docs</a>.</p>
+                    <p>For more information, check out the <a href="https://github.com/troberts0811/geometrize-js/#readme" target="_blank">docs</a>.</p>
                     <button type="button" @click="dismissMessage">Dismiss</button>
                 </div>
                 <div id="configWindow" class="window" v-if="isConfigOpen">

@@ -63,7 +63,7 @@
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "1347d565b864549d5671";
+/******/ 	var hotCurrentHash = "72f3280a9f9d07574e48";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -947,7 +947,7 @@ var render = function() {
               _vm._v(" "),
               _c("p", [
                 _vm._v(
-                  "This is a little plugin to make a triangular gradient using canvas. The colours and grid sizing is controlled by the settings below for you to customise."
+                  "This is a configurable plugin to make a triangular gradient using canvas. The colours and grid sizing is controlled by the settings below for you to customise."
                 )
               ]),
               _vm._v(" "),
@@ -1039,7 +1039,16 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("p", [
       _vm._v("For more information, check out the "),
-      _c("a", { attrs: { href: "", target: "_blank" } }, [_vm._v("docs")]),
+      _c(
+        "a",
+        {
+          attrs: {
+            href: "https://github.com/troberts0811/geometrize-js/#readme",
+            target: "_blank"
+          }
+        },
+        [_vm._v("docs")]
+      ),
       _vm._v(".")
     ])
   }
