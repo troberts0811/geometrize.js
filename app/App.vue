@@ -319,9 +319,20 @@
 
     #colorWindow {
         position: fixed;
-        top: 2em;
+        top: 50%;
         left: 50%;
-        transform: translateX(-50%);
+        transform: translate(-50%, -50%);
+        z-index: 1;
+        width: auto;
+        height: auto;
+        display: flex;
+        justify-content: center;
+        background: rgba(0,0,0,0.75);
+        border: 1px solid;
+
+        .picker_wrapper {
+            margin: 1rem;
+        }
     }
 
     @media screen and (max-width: 800px){
