@@ -3,7 +3,6 @@ import Point from './Point';
 export default class Grid{
 
     constructor(canvas, config){
-        console.log(config);
         this.rows = config.Rows;
         this.cols = config.Columns;
         this.w = canvas.clientWidth * window.devicePixelRatio;

@@ -63,7 +63,7 @@
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "6a24a5cbf5c2326f46fc";
+/******/ 	var hotCurrentHash = "3cde7586ad2d93b66830";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -11209,7 +11209,6 @@ var Grid = function () {
     function Grid(canvas, config) {
         _classCallCheck(this, Grid);
 
-        console.log(config);
         this.rows = config.Rows;
         this.cols = config.Columns;
         this.w = canvas.clientWidth * window.devicePixelRatio;

@@ -150,7 +150,7 @@ button.copied:after {
   outline: none;
 }
 .hide {
-  display: none;
+  display: none !important;
 }
 #colorWindow {
   position: fixed;

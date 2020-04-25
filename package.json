@@ -1,6 +1,6 @@
 {
-  "name": "geometrize",
-  "version": "1.0.0",
+  "name": "@tomroberts/geometrize",
+  "version": "1.0.1",
   "description": "Geometry style interactive backgrounds powered by canvas",
   "main": "src/geometrize.js",
   "scripts": {
@@ -26,7 +26,7 @@
   "bugs": {
     "url": "https://github.com/troberts0811/geometrize.js/issues"
   },
-  "homepage": "https://github.com/troberts0811/geometrize.js#readme",
+  "homepage": "https://github.com/troberts0811/geometrize-js",
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
@@ -41,16 +41,14 @@
     "sass-loader": "^7.0.1",
     "uglifyjs-webpack-plugin": "^2.2.0",
     "url-loader": "^1.0.1",
+    "vanilla-picker": "^2.10.1",
+    "vue": "^2.5.16",
+    "vuex": "^3.0.1",
     "vue-loader": "^15.2.4",
     "vue-style-loader": "^4.1.0",
     "vue-template-compiler": "^2.5.16",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.0.3",
     "webpack-dev-server": "^3.10.3"
-  },
-  "dependencies": {
-    "vanilla-picker": "^2.10.1",
-    "vue": "^2.5.16",
-    "vuex": "^3.0.1"
   }
 }
