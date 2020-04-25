@@ -25,17 +25,20 @@ The next few images helps describe the logic in how Geometrize works. The black 
 
 The blue cross-markers are the randomicity each point has based on the PositionRandomPercentageX and PositionRandomPercentageY of GridSetting. This helps distort the grid and create unique shapes. You will notice points along the canvas border cannot go randomly inwards. This is to ensure the canvas gets completely covered. The rows and columns you have, the higher the triangle density will be in the canvas and thus make your triangles smaller. Each point in the grid gets a random position that it can reach as shown in figure 2.
 
-![The Randomicity of the Grid](https://troberts0811.github.io/geometrize-js/img/how-it-works-2.jpg)
+![The Randomicity of the Grid](https://troberts0811.github.io/geometrize-js/ismg/how-it-works-2.jpg)
+
 *Fig 2: The randomicity of the points in the grid*
 
-Once these positions are set then the grid has its points and it can start to build the triangles from the effect. The neighbouring point across and underneath each one is used to make a square and cut it diagonally to make two triangles. Once all the points are covered then the triangular effect starts to form like in figure 3.
+Once these positions are set then the grid has its points and it can start to build the triangles from the effect. The neighbouring point across and underneath each one is used to make a square and cut it diagonaslly to make two triangles. Once all the points are covered then the triangular effect starts to form like in figure 3.
 
 ![The Triangles put into the Grid](https://troberts0811.github.io/geometrize-js/img/how-it-works-3.jpg)
+
 *Fig 3: The triangles put into the grid*
 
 The triangles have their colour calculated based on how far they are into the grid and how their position relates to the milestones set in GradientSetting. The colour transitions in each triangle to match the gradient you want to show as the final product you see on screen.
 
-![The Triangular Effect](https://troberts0811.github.io/geometrize-js/img/how-it-works-5.jpg)
+![The Triangular Effect](https://troberts0811.github.io/geometrize-js/img/how-it-works-4.jpg)
+
 *Fig 4: The triangular effect which would transition your gradient*
 
 ### Constructor
