@@ -314,7 +314,7 @@
     }
 
     .hide{
-        display: none;
+        display: none !important;
     }
 
     #colorWindow {
