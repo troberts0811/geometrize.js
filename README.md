@@ -14,7 +14,51 @@ A configurable plugin to make a triangular interactive gradient background using
 
 ### Installation
 
+You can download the package currently via NPM
+
+    npm i -S @tomroberts/geometrize  
+
 ### Usage
+
+    import Geometrize from '@tomroberts/geometrize';
+     
+    let geometrize = new Geometrize('geometrize');
+
+There are two ways to run Geometrize based first parameter of the constructor. The first parameter is an Id and it can be either the Id of a canvas you want it on or the id of a parent you want a canvas to sit in.
+
+For both scenarios you will need to add to your stylesheet a canvas rule with width and height set because of the pixel ratio effect. For example you could use this setup.
+
+    canvas{
+	    width: 100%;
+	    height: 600px;
+    }
+
+#### Method 1 - Canvas Id
+
+    <div>
+	    <canvas  id="geometrize"  width="100%"  height="600"></canvas>
+	</div>
+
+Geometrize will use this canvas as it has the id and paint the effect on here.
+
+#### Method 2 - Parent Id
+
+    <div id="geometrize"></div>
+
+In this scenario Geometrize will add a new canvas within this element that will be sized to the same size of this element.
+
+#### With a config
+
+There is a second parameter for passing a config to Geometrize. You can copy one from the live demo or read more about the options below in the contructor section. The easiest way to use it is in the example below.
+
+    import Geometrize from '@tomroberts/geometrize';
+    
+    let config = {
+	    ...
+	};
+	
+    let geometrize = new Geometrize('geometrize', config);
+
 
 ### How It Works
 
@@ -44,6 +88,7 @@ The triangles have their colour calculated based on how far they are into the gr
 ### Constructor
 
     Geometrize([targetId], [config])
+
 |Field|Type|Required|Default value|
 --- | --- | --- | ---
 |targetId|String|Yes||

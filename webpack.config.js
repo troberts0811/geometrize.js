@@ -1,18 +1,19 @@
 const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = (env, arg) => {
     let isProduction = false;
 
-    if (typeof env !== 'undefined' && env !== null) {
-        isProduction = env.mode === 'production' ? true : false;
+    if (typeof arg !== 'undefined' && typeof arg.mode !== 'undefined') {
+        isProduction = arg.mode === 'production' ? true : false;
     }
 
     const extractStyles = new MiniCssExtractPlugin({
         filename: './css/[name].css'
     });
+
     const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
     return {
@@ -30,10 +31,13 @@ module.exports = (env, arg) => {
         optimization: {
             minimize: isProduction,
             minimizer: [
-                new UglifyJsPlugin({
-                    cache: true,
-                    parallel: true,
-                    sourceMap: true
+                new TerserPlugin({
+                    terserOptions: {
+                        output: {
+                          comments: false,
+                        },
+                      },
+                      extractComments: false,
                 })
             ]
         },
