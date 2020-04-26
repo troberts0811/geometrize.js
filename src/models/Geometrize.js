@@ -1,9 +1,9 @@
-import MetaDataKeys from './enums/MetaDataKeys';
-import ArrayMeta from './models/ArrayMeta';
-import Config from './models/Config';
-import Grid from './models/Grid';
-import MutationResult from './models/MutationResult';
-import Triangle from './models/Triangle';
+import MetaDataKeys from '../enums/MetaDataKeys';
+import ArrayMeta from './ArrayMeta';
+import Config from './Config';
+import Grid from './Grid';
+import MutationResult from './MutationResult';
+import Triangle from './Triangle';
 
 export default class Geometrize{
 

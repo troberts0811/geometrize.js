@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import Geometrize from 'geometrize/geometrize';
+import Geometrize from 'geometrize';
 import { ConfigFields } from '../data/ConfigFields';
 
 Vue.use(Vuex);

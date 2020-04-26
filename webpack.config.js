@@ -18,13 +18,14 @@ module.exports = (env, arg) => {
 
     return {
         entry: {
-            'geometrize': ['babel-polyfill', './src/geometrize.js'],
+            'geometrize': ['babel-polyfill', './src/index.js'],
             'app': ['babel-polyfill', './app.js']
         },
         output:{
             path: path.resolve(__dirname, './dist/', arg.mode + '/',),
             filename: '[name].js',
-            globalObject: 'this'
+            globalObject: 'this',
+            library:'Geometrize',
         },
         mode: !isProduction ? 'development' : 'production',
         target: 'web',
