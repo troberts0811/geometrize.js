@@ -2,7 +2,22 @@
 
 A configurable plugin to make a triangular interactive gradient background using canvas. Adjust the settings to make your own effect!
 
-  
+- [geometrize.js](#geometrizejs)
+  * [Live demo](#live-demo)
+  * [Documentation](#documentation)
+    + [Installation](#installation)
+    + [Usage](#usage)
+      - [Method 1 - Canvas Id](#method-1---canvas-id)
+      - [Method 2 - Parent Id](#method-2---parent-id)
+      - [With a config](#with-a-config)
+    + [Code Documentation](#code-documentation)
+      - [Constructor](#constructor)
+      - [Config Object](#config-object)
+      - [GradientSetting](#gradientsetting)
+        * [ColourProfile](#colourprofile)
+      - [GridSetting](#gridsetting)
+      - [EffectsSetting](#effectssetting)
+    + [How It Works](#how-it-works)
 
 ## Live demo
 
@@ -67,7 +82,11 @@ There is a second parameter for passing a config to Geometrize. You can copy one
 	
     let geometrize = new Geometrize('geometrize', config);
 
-### Constructor
+### Code Documentation
+
+Here's a list of the different functions and data structures to understand what to call and the config structure.
+
+#### Constructor
 
     Geometrize([targetId], [config])
 
@@ -80,7 +99,7 @@ The targetId is the element where Geometrize will be put. If the element is a ca
 
 If no config is passed then the default options are used. For the data structure of the Config Object see the Config Object settings or export your own config from the [online demo](https://troberts0811.github.io/geometrize-js  "Geometrize").
 
-### Config Object
+#### Config Object
 
 The Config Object is the master object and has all of it's properties made of the other models involved in Geometrize. Here is all of it's properties and types that go with it. You can find more information on each one below. No values in any of these objects are required as they all have default values.
 
@@ -91,7 +110,7 @@ The Config Object is the master object and has all of it's properties made of th
     }
 
 
-### GradientSetting
+#### GradientSetting
 
 Gradient Settings control the colouring of the triangles. The object for it looks like below.
 
@@ -110,7 +129,7 @@ when passing this array at least a ColourProfile object is required else it will
 
 By default, 3 random Milestones are used so that every time Geometrize is instanced without a config you will get a new gradient. These 3 milestones will each get a random colour and then get placed within a certain area. The first milestone will be randomly within 0-6% of the gradient, the second within 40-61% and the last one between 95 and 100%. 
 
-#### ColourProfile
+##### ColourProfile
 
 The ColourProfile only has 2 properties to help markup a part of a gradient. The object looks like below.
 
@@ -123,7 +142,7 @@ The ColourProfile only has 2 properties to help markup a part of a gradient. The
 |Hex|String|A colour code as a string. Can be a hex or RGB string but will be converted and stored as a hex.|
 |Position|Int|A position within the gradient. Has to be between 0 and 100 inclusive.|
 
-### GridSetting
+#### GridSetting
 
 The GridSetting object defines key information on how to build the grid and effects how many triangles are made and in what shape.
 
@@ -141,7 +160,7 @@ The GridSetting object defines key information on how to build the grid and effe
 |PositionRandomPercentageX|Decimal|% randomicity in x axis of a grid point. See how it works for more info. |
 |PositionRandomPercentageY|Decimal|% randomicity in y axis of a grid point. See how it works for more info.|
 
-### EffectsSetting
+#### EffectsSetting
 
 The EffectsSetting object defines interactivity on the canvas. The object looks like below.
 
