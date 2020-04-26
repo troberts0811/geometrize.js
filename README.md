@@ -2,22 +2,23 @@
 
 A configurable plugin to make a triangular interactive gradient background using canvas. Adjust the settings to make your own effect!
 
-- [geometrize.js](#geometrizejs)
-  * [Live demo](#live-demo)
-  * [Documentation](#documentation)
-    + [Installation](#installation)
-    + [Usage](#usage)
-      - [Method 1 - Canvas Id](#method-1---canvas-id)
-      - [Method 2 - Parent Id](#method-2---parent-id)
-      - [With a config](#with-a-config)
-    + [Code Documentation](#code-documentation)
-      - [Constructor](#constructor)
-      - [Config Object](#config-object)
-      - [GradientSetting](#gradientsetting)
-        * [ColourProfile](#colourprofile)
-      - [GridSetting](#gridsetting)
-      - [EffectsSetting](#effectssetting)
-    + [How It Works](#how-it-works)
+## Table of Contents
+
+- [Live demo](#live-demo)
+- [Documentation](#documentation)
+  * [Installation](#installation)
+  * [Usage](#usage)
+    + [Method 1 - Canvas Id](#method-1---canvas-id)
+    + [Method 2 - Parent Id](#method-2---parent-id)
+    + [With a config](#with-a-config)
+  * [Code Documentation](#code-documentation)
+    + [Constructor](#constructor)
+    + [Config Object](#config-object)
+    + [GradientSetting](#gradientsetting)
+      - [ColourProfile](#colourprofile)
+    + [GridSetting](#gridsetting)
+    + [EffectsSetting](#effectssetting)
+  * [How It Works](#how-it-works)
 
 ## Live demo
 
